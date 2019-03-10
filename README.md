@@ -4,6 +4,20 @@ Landsat scenes were used to calculate the fluctuating lake area for the years 19
 
 used datasets:
 -	22 scenes of the multispectral Landsat 5 and 8 satellites with a resolution of 30 meters, each from April and July in a 6 and 4 year cycle from 1989 to 2009 and an annual time series from 2013 to 2018
+  Landsat 5:
+April/July 1989
+April/July 1995
+April/July 1999
+April/July 2005
+April/July 2009
+  Landsat 8:
+April/July 2013
+April/July 2014
+April/July 2015
+April/July 2016
+April/July 2017
+April/July 2018
+
 -	Monthly average temperatures 1989 to 2018 from six weather stations distributed around Lake Poopó
 -	monthly average evapotranspiration 1989 to 2018 from six weather stations distributed around Lake Poopó
 -	Bathymetric lines of Lake Poopó
