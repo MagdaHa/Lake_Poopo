@@ -1,0 +1,83 @@
+---
+title: 'Analysis of droughts caused by climate variability at Lake PoopÃ³, Bolivia:
+  Monitoring the lake extent based on a Landsat time series from 1989 to 2018'
+author: "Magdalena Halbgewachs"
+date: "24 April 2019"
+output:
+  ioslides_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## geographical conditions
+
+- Lake Poopó, located in the Bolivian Altiplano
+- extremely regulated by environmental influences
+- mean elevation of 3810 m above sea level
+- characterized by extreme spatial and temporal fluctuations in water resources and levels
+- The Desaguadero River transports water from Lake Titicaca to Lake Poopó over 300 km
+- declared dry in 2015 but still fills periodically with water
+- largest dimensions of the Lake Poopó during the rainy season can be 3,000 km² with a maximum depth of 3.5 meters
+- In the dry season often no water in the lake, which leads to a superficial salt crust
+
+##NDWI
+
+NDWI=(GREEN-NIR)/(GREEN+NIR)
+
+```{r}
+
+print(ndwi_plot)
+```
+
+
+## lake area extent and bathymetry
+
+```{r}
+
+```
+
+##lake area extent in km²
+
+```{r}
+
+```
+
+##precipitation
+
+```{r}
+
+```
+
+
+##evapotranspiration
+
+```{r}
+
+```
+
+##correlations
+
+```{r}
+
+```
+
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
