@@ -28,8 +28,7 @@ knitr::opts_chunk$set(echo = FALSE)
 NDWI=(GREEN-NIR)/(GREEN+NIR)
 
 ```{r}
-
-print(ndwi_plot)
+plot_titicaca
 ```
 
 

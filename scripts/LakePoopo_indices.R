@@ -16,69 +16,86 @@
 library(sp)
 library(raster)
 library(RStoolbox)
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\get_band.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\get_sensor_type.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\NDWI.R")
 
 #-----------------------------------------------------------------------------------------------------
 # 1.) creating subsets of all images
 #-----------------------------------------------------------------------------------------------------
-#extent(NDWI_0718)
 
-#importing csv with raw data paths
-raw_data <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\raw_data.csv", header=T, sep=";")
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\cropped_data")
+raw_data_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\raw"
+crop_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\cropped_data"
 
-#cropping NIR bands
-par(mfrow=c(4,6))
-for (row in (1:nrow(raw_data))) {
-  e <- extent(650000, 750000, -2130000, -2040000) #predefined new extent
-  crop_nir <- crop(raster(as.character(raw_data[row, "NIR"])), extent(e))
-  plot(crop_nir)
-  name <- paste0('crop_NIR_', raw_data[row, "ï..DATE"], '.tif')
-  writeRaster(crop_nir, filename = name , format="GTiff",overwrite=TRUE)
-}
 
-#cropping GREEN bands
-par(mfrow=c(4,6))
-for (row in (1:nrow(raw_data))) {
+dirs_full <- list.dirs(raw_data_folder)
+dirs_full <- dirs_full[-1]
+dirs <- list.dirs(raw_data_folder, full.names = FALSE)
+dirs <- dirs[-1]
+
+#cropping NIR and GREEN bands
+for (i in 1:length(dirs_full)) {
+  sensor_type <- get_sensor_type(dirs_full[i])
+  nir_band <- get_band("NIR", dirs_full[i], sensor_type)
+  green_band <- get_band("GREEN", dirs_full[i], sensor_type)
+  #crop
   e <- extent(650000, 750000, -2130000, -2040000)
-  crop_green <- crop(raster(as.character(raw_data[row, "GREEN"])), extent(e))
-  plot(crop_green)
-  name <- paste0('crop_GREEN_', raw_data[row, "ï..DATE"], '.tif')
-  writeRaster(crop_green, filename = name , format="GTiff",overwrite=TRUE)
-  print(paste0("processed image: ", name))
+  crop_nir <- crop(nir_band, e)
+  crop_green <- crop(green_band, e)
+  #write
+  name_nir <- paste0(crop_out_folder, '\\crop_NIR_', dirs[i], '.tif')
+  name_green <- paste0(crop_out_folder, '\\crop_GREEN_', dirs[i], '.tif')
+  writeRaster(crop_nir, filename = name_nir, format="GTiff",overwrite=TRUE)
+  message (paste0("finished cropping NIR band:", name_nir))
+  writeRaster(crop_green, filename = name_green, format="GTiff",overwrite=TRUE)
+  message (paste0("finished cropping GREEN band:", name_green))
 }
 
 
 #--------------------------------------------------------------------------------------------------------
 # 2.) NDWI
 #---------------------------------------------------------------------------------------------------------
-#setting working directory
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\NDWI")
+cropped_bands_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\cropped_data"
+ndwi_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\NDWI"
 
-#importing csv with path names to referring Landsat images for NDWI
-csv_NDWI<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\NDWI.csv", header=T, sep=";")
+list_green <- list.files(cropped_bands_folder, pattern="GREEN", full.names = T, no.. = T)
+list_nir <- list.files(cropped_bands_folder, pattern="NIR", full.names = T, no.. = T)
 
-#function NDWI
-NDWI <- function(green,nir) {   #bands 3 and 5
-  ndwi <- (green-nir)/(green+nir)
-  return(ndwi)
-}
-
-#calculating NDWI for each image
-par(mfrow=c(4,6))
-for (row in (1:nrow(csv_NDWI))) {
-  nir <- brick(raster(as.character(csv_NDWI[row,"NIR"])))
-  green <- brick(raster(as.character(csv_NDWI[row,"GREEN"])))
-  result <- NDWI(green, nir)
-  plot(result)
-  name <- paste0('NDWI_', csv_NDWI [row, "ï..DATE"], '.tif')
-  writeRaster(result, filename = name , format="GTiff",overwrite=TRUE)
-  print(paste0("processed image: ", name))
+#calculating NDWI
+for (i in 1:length (list_nir)) {
+  nir <- brick(list_nir[i])
+  green <- brick(list_green[i])
+  ndwi <- NDWI (green, nir)
+  name_ndwi <- paste0(ndwi_out_folder, '\\NDWI_', dirs[i], '.tif')
+  writeRaster(ndwi, filename = name_ndwi, format="GTiff",overwrite=TRUE)
+  message (paste0("finished NDWI image:", name_nir))
 }
 
 
 #-------------------------------------------------------------------------------------------------------
-# 4.) extracting water area for each month (based on NDWI)
+# 4.) extracting water area for each month (based on NDWI) -> classification
 #-------------------------------------------------------------------------------------------------------
+ndwi_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\NDWI"
+water_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
+
+list_ndwi <- list.files(ndwi_folder, pattern="NDWI", full.names = T, no.. = T)
+
+#defining class intervals
+#> 0.1 = water; < 0.1 = non water
+from <- c(-1, -0.5, 0, 0.1)
+to <- c(-0.5, 0, 0.1, 1)
+becomes <- c(0, 0, 0, 1)
+classDef <- cbind(from, to, becomes)
+
+for (i in 1:length (list_ndwi)) {   #error!!
+  classes <- reclassify(brick(list_ndwi[i]), rcl = classDef)
+  name_class <- paste0(water_out_folder, '\\class_', dirs[i], '.tif')
+  writeRaster(class, filename = name_class, format="GTiff",overwrite=TRUE)
+  message (paste0("finished classified image:", name_nir))
+}
+
+
+#----------------------------------
 setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification")
 csv_class<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\stack.csv", header=T, sep=";")
 
@@ -103,7 +120,19 @@ for (row in (1:nrow(csv_class))) {
 # 5.) Change detection: minus calculation of NDWI water area per year
 #-------------------------------------------------------------------------------------------------------
 ##minus calculation of two images
+classification_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
+change_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\change_minus"
 
+list_class <- list.files(classification_folder, pattern="class", full.names = T, no.. = T)
+
+
+
+
+
+
+
+
+#-----------------------------------------------
 setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\change_minus")
 csv_change<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\change_minus.csv", header=T, sep=";")
 

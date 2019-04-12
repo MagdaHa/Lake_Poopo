@@ -7,6 +7,7 @@
 #Hydrol. Earth Syst. Sci., 19, 4345-4364, doi:10.5194/hess-19-4345-2015, 2015 
 
 library(ggplot2)
+#install.packages("colorspace")
 #install.packages("gganimate")
 library(gganimate)
 
