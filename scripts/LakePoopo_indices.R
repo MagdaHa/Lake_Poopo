@@ -16,9 +16,20 @@
 library(sp)
 library(raster)
 library(RStoolbox)
+#install.packages('devtools', dependencies = TRUE)
+library(devtools)
+#install.packages("backports")
+library(backports)
+install_github("MagdaHa/Lake_Poopo/ChangeDetectR")
+library(ChangeDetectR)
 source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\get_band.R")
 source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\get_sensor_type.R")
 source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\NDWI.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\binaryMap.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\change_detection.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\calc_water_area.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\getDate.R")
+source("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann\\Lake_Poopo\\Functions\\getYear.R")
 
 #-----------------------------------------------------------------------------------------------------
 # 1.) creating subsets of all images
@@ -38,19 +49,16 @@ for (i in 1:length(dirs_full)) {
   sensor_type <- get_sensor_type(dirs_full[i])
   nir_band <- get_band("NIR", dirs_full[i], sensor_type)
   green_band <- get_band("GREEN", dirs_full[i], sensor_type)
+  date <- getDate(dirs_full[i])
   #crop
   e <- extent(650000, 750000, -2130000, -2040000)
   crop_nir <- crop(nir_band, e)
   crop_green <- crop(green_band, e)
   #write
-  name_nir <- paste0(crop_out_folder, '\\crop_NIR_', dirs[i], '.tif')
-  name_green <- paste0(crop_out_folder, '\\crop_GREEN_', dirs[i], '.tif')
-  writeRaster(crop_nir, filename = name_nir, format="GTiff",overwrite=TRUE)
-  message (paste0("finished cropping NIR band:", name_nir))
-  writeRaster(crop_green, filename = name_green, format="GTiff",overwrite=TRUE)
-  message (paste0("finished cropping GREEN band:", name_green))
-}
-
+  writeRaster(crop_nir, filename = paste0(crop_out_folder, "/crop_nir", date, ".tif"), format = "GTiff", overwrite = T)
+  writeRaster(crop_green, filename = paste0(crop_out_folder, "/crop_green", date, ".tif"), format = "GTiff", overwrite = T)
+  message (paste0("finished processed image:", date))
+} 
 
 #--------------------------------------------------------------------------------------------------------
 # 2.) NDWI
@@ -58,61 +66,38 @@ for (i in 1:length(dirs_full)) {
 cropped_bands_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\cropped_data"
 ndwi_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\NDWI"
 
-list_green <- list.files(cropped_bands_folder, pattern="GREEN", full.names = T, no.. = T)
-list_nir <- list.files(cropped_bands_folder, pattern="NIR", full.names = T, no.. = T)
+list_green <- list.files(cropped_bands_folder, pattern="green", full.names = T, no.. = T)
+list_nir <- list.files(cropped_bands_folder, pattern="nir", full.names = T, no.. = T)
 
-#calculating NDWI
+
 for (i in 1:length (list_nir)) {
+  #ndwi calculation
   nir <- brick(list_nir[i])
   green <- brick(list_green[i])
   ndwi <- NDWI (green, nir)
-  name_ndwi <- paste0(ndwi_out_folder, '\\NDWI_', dirs[i], '.tif')
-  writeRaster(ndwi, filename = name_ndwi, format="GTiff",overwrite=TRUE)
-  message (paste0("finished NDWI image:", name_nir))
+  date <- getDate(list_green[i])
+  #write
+  writeRaster(ndwi, filename = paste0(ndwi_out_folder, "/NDWI_", date, ".tif"), format = "GTiff", overwrite = T)
+  message (paste0("finished processed image:", date))
 }
-
-
 #-------------------------------------------------------------------------------------------------------
-# 4.) extracting water area for each month (based on NDWI) -> classification
+# 4.) extracting water area for each month (based on NDWI) -> classification, binary images
 #-------------------------------------------------------------------------------------------------------
 ndwi_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\NDWI"
-water_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
+binary_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
 
 list_ndwi <- list.files(ndwi_folder, pattern="NDWI", full.names = T, no.. = T)
 
-#defining class intervals
-#> 0.1 = water; < 0.1 = non water
-from <- c(-1, -0.5, 0, 0.1)
-to <- c(-0.5, 0, 0.1, 1)
-becomes <- c(0, 0, 0, 1)
-classDef <- cbind(from, to, becomes)
 
-for (i in 1:length (list_ndwi)) {   #error!!
-  classes <- reclassify(brick(list_ndwi[i]), rcl = classDef)
-  name_class <- paste0(water_out_folder, '\\class_', dirs[i], '.tif')
-  writeRaster(class, filename = name_class, format="GTiff",overwrite=TRUE)
-  message (paste0("finished classified image:", name_nir))
-}
-
-
-#----------------------------------
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification")
-csv_class<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\stack.csv", header=T, sep=";")
-
-#defining class intervals
-#> 0.1 = water; < 0.1 = non water
-from <- c(-1, -0.5, 0, 0.1)
-to <- c(-0.5, 0, 0.1, 1)
-becomes <- c(0, 0, 0, 1)
-classDef <- cbind(from, to, becomes)
-
-par(mfrow=c(4,6))
-for (row in (1:nrow(csv_class))) {
-  newClasses <- reclassify (raster(as.character(csv_class[row,"NDWI"])), rcl = classDef)
-  plot(newClasses)
-  name <- paste0('class_', csv_class [row, "DATE"], '.tif')
-  writeRaster(newClasses, filename = name , format="GTiff",overwrite=TRUE)
-  print(paste0("processed image: ", name))
+for (i in 1:length(list_ndwi)) {
+  #binary map
+  threshold <- 0.1
+  ndwi_ras <- brick(list_ndwi[i])
+  class <- binaryMap(ndwi_ras, threshold)
+  date <- getDate(list_ndwi[i])
+  #write
+  writeRaster(class, filename = paste0(binary_out_folder, "/class_", date, ".tif"), format = "GTiff", overwrite = T)
+  message(paste0("finished classified image:", date))
 }
 
 
@@ -123,76 +108,76 @@ for (row in (1:nrow(csv_class))) {
 classification_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
 change_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\change_minus"
 
-list_class <- list.files(classification_folder, pattern="class", full.names = T, no.. = T)
+list_change_april <- list.files(classification_folder, pattern="04", full.names = T, no.. = T) #geth nicht! zu viele Bilder!
+list_change_july <- list.files(classification_folder, pattern="07", full.names = T, no.. = T)
 
 
-
-
-
-
-
-
-#-----------------------------------------------
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\change_minus")
-csv_change<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\change_minus.csv", header=T, sep=";")
-
-#function change
-CHANGE <- function(jul,apr) {
-  change <- jul-apr
-  return(change)
+for (i in 1:length(list_change_april)) {
+  apr <- brick(list_change_april[i])
+  jul <- brick(list_change_july[i])
+  change <- change_detection(jul, apr)
+  year <- getYear(list_change_april[i])
+  writeRaster(change, filename = paste0(change_out_folder, "\\change_", year, ".tif"), format = "GTiff", overwrite = T)
+  message(paste0("finished image:", year))
 }
 
-#calculating change
-par(mfrow=c(2,6))
-for (row in (1:nrow(csv_change))) {
-  jul <- brick(raster(as.character(csv_change[row,"JULY"])))
-  apr <- brick(raster(as.character(csv_change[row,"APRIL"])))
-  result <- CHANGE(jul, apr)
-  plot(result)
-  name <- paste0('change_minus_', csv_change [row, "ï..YEAR"], '.tif')
-  writeRaster(result, filename = name , format="GTiff",overwrite=TRUE)
-  print(paste0("processed image: ", name))
-}
 
 #-------------------------------------------------------------------------------------------------------
 # 6.) calculating water area per month/year
 #-------------------------------------------------------------------------------------------------------
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area")
-csv_change<- read.csv(file="C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\change_minus.csv", header=T, sep=";")
+classification_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
 
-# calculation in km²
-calc_water_area <- function(x, res_x, res_y){
-  #define default value for res_x and res_y
-  if (missing(res_x) & missing(res_y)){
-    res_x <- 0.03
-    res_y <- 0.03
-  }
-  vals <- getValues(x)
-  water_cells <- sum(vals ==1, na.rm = T)
-  water_area <-  sum(vals ==1, na.rm = T) * res_x * res_y
-  return(water_area)
+list_area <- list.files(classification_folder, pattern="class", full.names = T, no.. = T)
+list_area_april <- list.files(classification_folder, pattern="04", full.names = T, no.. = T)
+list_area_july <- list.files(classification_folder, pattern="07", full.names = T, no.. = T)
+
+#create data frames for all areas and july and april separated
+area_df <- data.frame(matrix(ncol = 2, nrow = 22))
+names(area_df) <- c("DATE", "AREA")
+area_df$DATE <- c("1989-04-01", "1989-07-01", "1995-04-01", "1989-07-01", "1999-04-01", "1999-07-01", 
+                  "2005-04-01", "2005-07-01", "2009-04-01", "2009-07-01",
+                  "2013-04-01", "2013-07-01", "2014-04-01", "2014-07-01", "2015-04-01", 
+                  "2015-07-01", "2016-04-01", "2016-07-01", "2017-04-01", "2017-07-01", "2018-04-01", "2018-07-01")
+area_df$AREA <- 0
+
+area_df_april <- data.frame(matrix(ncol = 2, nrow = 11))
+names(area_df_april) <- c("YEAR", "AREA")
+area_df_april$YEAR <- c("1989-04-1", "1995-04-1", "1999-04-1", "2005-04-1", "2009-04-1",
+                  "2013-04-1", "2014-04-1", "2015-04-1", "2016-04-1", "2017-04-1", "2018-04-1")
+area_df_april$AREA <- 0
+
+area_df_july <- data.frame(matrix(ncol = 2, nrow = 11))
+names(area_df_july) <- c("YEAR", "AREA")
+area_df_july$YEAR <- c("1989-07-01", "1995-07-01", "1999-07-01", "2005-07-01", "2009-07-01",
+                        "2013-07-01", "2014-07-01", "2015-07-01", "2016-07-01", "2017-07-01", "2018-07-01")
+area_df_july$AREA <- 0
+
+#area calculations, separated by months
+for (i in 1:length(list_area)) {
+  raster <- brick(list_area[i])
+  year <- getYear(list_area)
+  area_df[i,2] <- calc_water_area(raster)
+  message(paste0("finished year:", year)) #incorrect
 }
 
-#-----APRIL
-area_april <- data.frame()
-for (row in (1:nrow(csv_change))) {
-  apr_area <- calc_water_area(brick(raster(as.character(csv_change[row,"APRIL"]))))
-  name <- paste0(as.character(csv_change[row, "ï..YEAR"]), "-04-01")
-  area_april[row, 1] <- name
-  area_april[row, 2] <- apr_area
-  print(paste0("processed image: ", name))
+#only April areas
+for (i in 1:length(list_area_april)) {
+  raster <- brick(list_area_april[i])
+  year <- getYear(list_area_april)
+  area_df_april[i,2] <- calc_water_area(raster)
+  message(paste0("finished year:", year)) #incorrect
 }
-names(area_april) <- c("YEAR", "APRIL")
-write.csv(area_april, file = "area_april.csv", sep = ";", na="NA", dec = ".")
 
-#-----JULY
-area_july <- data.frame()
-for (row in (1:nrow(csv_change))) {
-  jul_area <- calc_water_area(brick(raster(as.character(csv_change[row,"JULY"]))))
-  name <- paste0(as.character(csv_change[row, "ï..YEAR"]), "-07-01")
-  area_july[row, 1] <- name
-  area_july[row, 2] <- jul_area
-  print(paste0("processed image: ", name))
+#only July areas
+for (i in 1:length(list_area_july)) {
+  x <- brick(list_area_july[i])
+  year <- getYear(list_area_july)
+  area_df_july[i,2] <- calc_water_area(x)
+  message(paste0("finished year:", year)) #incorrect
 }
-names(area_july) <- c("YEAR", "JULY")
-write.csv(area_july, file = "area_july.csv", sep = ";", na="NA", dec = ".")
+
+#save data frames as csv
+setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat")
+write.csv(area_df, file = "area_new.csv", sep = ";", na="NA", dec = ".")
+write.csv(area_df_april, file = "area_april.csv", sep = ";", na="NA", dec = ".")
+write.csv(area_df_july, file = "area_july.csv", sep = ";", na="NA", dec = ".")
