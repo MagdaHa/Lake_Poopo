@@ -35,7 +35,7 @@ levelplot(NDWI_stack,
 
 
 ######################################################################################
-################################## CLASSIFICATION ####################################
+######################### CLASSIFICATION AND BATHYMETRY ##############################
 ######################################################################################
 class <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/classification"
 all_class <- list.files(class, full.names = TRUE, pattern = ".tif$")
@@ -49,9 +49,14 @@ names(class_stack)
 # use gsub to modify label names.that we'll use for the plot 
 rasterNames  <- gsub("class_","", names(class_stack))
 
+#------------------------------------------------------------------
+#load bathymetry lines
+bath.shp <- readOGR("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Lake_Poopo\\bathymetry_qgis.shp")
+crs(bath.shp)
+crs(class_stack)
+
 #----------------------------------------------------------------------
 #levelplot with one header and legend
-#or
 cols <- rasterTheme(region = brewer.pal("Blues", n=3))
 cuts <- c(0.1, 0.5, 1.1)
 
@@ -61,7 +66,8 @@ levelplot(class_stack,
           at=cuts,
           names.attr=rasterNames, # using new defined names
           kolorkey=F,
-          scales=list(draw=FALSE )) # remove axes labels & ticks
+          scales=list(draw=FALSE ))+ # remove axes labels & ticks
+  layer(sp.polygons(bath.shp), packets = (1:22))
 
 
 ######################################################################################
@@ -77,7 +83,7 @@ minus_stack <- stack(all_minus)
 # view names for each raster layer
 names(minus_stack)
 # use gsub to modify label names.that we'll use for the plot 
-rasterNames  <- gsub("change_minus_","", names(minus_stack))
+rasterNames  <- gsub("change_","", names(minus_stack))
 
 #----------------------------------------------------------------------
 #levelplot with one header and legend
@@ -92,21 +98,6 @@ levelplot(minus_stack,
           #par.settings=GrTheme(),
           scales=list(draw=FALSE )) # remove axes labels & ticks
 
-######################################################################################
-################################# BATHYMETRY  ########################################
-######################################################################################
-bath.shp <- readOGR("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Lake_Poopo\\bathymetry_qgis.shp")
-crs(bath.shp)
-crs(class_stack)
-
-mapTheme <- rasterTheme(region=brewer.pal(8,"Blues"))
-names(class_stack)
-rasterNames  <- gsub("class_","", names(class_stack))
-levelplot(class_stack,par.settings=mapTheme, alpha=0.2,
-          main="Lake area extent and bathymetry lines\n Lake Poopó (1989 - 2018)",
-          scales=list(draw=F),
-          names.attr=rasterNames) +
-  layer(sp.polygons(bath.shp), packets = (1:22))
 
 
 #-----------------------------------------
