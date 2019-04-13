@@ -6,7 +6,7 @@ library(rgdal)
 library(caret)
 
 #loading classified image from April 2009
-class_0409 <- brick("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification\\class_2009_04.tif")
+class_0409 <- brick("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification\\class_LT05_L1TP_233073_20090417_20161027_01_T1.tif")
 plot(class_0409)
 
 #loading validation areas
@@ -29,11 +29,11 @@ xy_val <- do.call("rbind", xy_val)
 plot(xy_val, add=T)
 
 #extract predictions
-pred <- extract(class_0409$class_2009_04, xy_val, cellnumbers=T)
+pred <- extract(class_0409$class_LT05_L1TP_233073_20090417_20161027_01_T1, xy_val, cellnumbers=T)
 
 #remove duplicate cells and cell colums
 dup <- duplicated(pred)
-pred <- pred[!dup,"class_2009_04"]
+pred <- pred[!dup,"class_LT05_L1TP_233073_20090417_20161027_01_T1"]
 obs <- xy_val$class[!dup]
 
 #convert int to factors
