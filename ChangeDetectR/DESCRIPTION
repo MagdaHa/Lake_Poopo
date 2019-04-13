@@ -1,9 +1,12 @@
 Package: ChangeDetectR
-Title: What the Package Does (one line, title case)
+Title: This package includes function for editing remote sensing data.
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Halbgewachs", "Magdalena", email = "first.last@example.com", role = c("aut", "cre"))
+Description: This package includes functionality that simplifies the editing of remote sensing data, especially to prepare them for surface extractions and changes over time.
 Depends: R (>= 3.5.1)
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/MagdaHa/Lake_Poopo/tree/master/ChangeDetectR
+RemoteUsername: MagdaHa
+Maintainer: Magdalena Halbgewachs
