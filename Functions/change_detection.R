@@ -1,5 +1,5 @@
 #function change
-area_change <- function(jul,apr) {
+change_detection <- function(jul,apr) {
   change <- jul-apr
   return(change)
 }
