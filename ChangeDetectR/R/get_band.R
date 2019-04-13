@@ -1,11 +1,16 @@
 #' get_band
 #'
 #' This function returns back the NIR and GREEN bands for the satelites Landsat 4, 5 and 8.
-#' @param love Do you love cats? Defaults to TRUE.
-#' @keywords Landsat, bands
+#' output: raster layer
+#' @param band the band you want to return
+#' @param image_folder folder where your images are stored
+#' @param sensor_type sentor type of your images
+#' 
+#' @details this function does xxx
+#' @keywords Landsat, bands, remote sensing
 #' @export
 #' @examples
-#' cat_function()
+
 
 
 
