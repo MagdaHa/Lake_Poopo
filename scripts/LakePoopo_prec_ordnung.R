@@ -4,14 +4,14 @@
 ########### WITH WATER LEVELS ##############
 ############################################
 
-library(data.table)
-#library(ggplot2)
+#library(data.table)
+library(ggplot2)
 #devtools::install_github("thomasp85/patchwork")
-#library(patchwork)
-library(scales)
-library(tidyverse)
-#library(reshape2)
-#library(corrplot)
+library(patchwork)
+#library(scales)
+#library(tidyverse)
+library(reshape2)
+library(corrplot)
 
 ################################################################################
 #--------------------------------------------------------------------------------
@@ -65,19 +65,37 @@ et_mean_july[[1]] <- as.Date(et_mean_july[[1]])
 
 #------------------------------------------------------------------------------
 ###lake area###
-#only April 1989 - 2018
-area_april<- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\area_april.csv", header=T, sep=";")
+#only April 1989 - 2018 (based on df of index calculations)
+area_april <- area_df_april
 if(names(area_april)[1]=="ï..YEAR"){
   names(area_april)[1]<- "YEAR"
 }
-area_april[[1]] <- as.Date(area_april[[1]])
+area_april[[1]] <- as.Date(area_april[[1]], origin="1989-04-1")
 
-#only July 1989 - 2018
-area_july<- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\area_july.csv", header=T, sep=";")
+#only July 1989 - 2018 (based on df of index calculations)
+area_july <- area_df_july
 if(names(area_july)[1]=="ï..YEAR"){
   names(area_july)[1]<- "YEAR"
 }
-area_july[[1]] <- as.Date(area_july[[1]])
+area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
+
+#------
+##only if df is not in current environment
+#area_april<- read.csv("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area_april.csv", header=T, sep=",")
+#area_april <- area_april[-c(1)] #remove first column
+#if(names(area_april)[1]=="ï..YEAR"){
+#names(area_april)[1]<- "YEAR"
+#}
+#area_april[[1]] <- as.Date(area_april[[1]], origin="1989-04-1")
+
+##only if df is not in current environment
+#area_july <- read.csv("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area_july.csv", header=T, sep=",")
+#area_july <- area_july[-c(1)] #remove first column
+#if(names(area_july)[1]=="ï..YEAR"){
+  #names(area_july)[1]<- "YEAR"
+#}
+#area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
+
 
 #------------------------------------------------------------------------------
 ###lake area Titicaca###
@@ -101,11 +119,6 @@ names(df_data) <- c ("YEAR", "A_APRIL", "A_JULY", "PREC_APRIL", "PREC_JULY", "ET
 #all months 1989 - 2018
 df_data_all <- merge (et_mean_all, prec_mean_all,by="YEAR", all=T)
 names(df_data_all) <- c ("YEAR", "ET", "PREC")
-
-#save all months 1989 - 2018 in one dataframe (all data in one column)
-df_reshape_all<- df_data_all
-df_reshape_all <- melt(df_data_all, id=c("YEAR"))
-
 
 ################################################################################
 #--------------------------------------------------------------------------------
