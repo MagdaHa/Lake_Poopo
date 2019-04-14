@@ -9,4 +9,4 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/MagdaHa/Lake_Poopo/tree/master/ChangeDetectR
 RemoteUsername: MagdaHa
-Maintainer: Magdalena Halbgewachs
+RoxygenNote: 6.1.1
