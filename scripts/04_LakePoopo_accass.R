@@ -1,10 +1,23 @@
-###############################
-##### Accuracy Assessment #####
-###############################
+##########################################################################################
+#### Lake Poopo, Bolivia: Accuracy Assessment
+#### author: Magdalena Halbgewachs
+#### April 2019
+##########################################################################################
+
+##########################################################################################
+#### Background information
+
+### Study area: Lake Poopó, Bolivia
+
+##########################################################################################
+
+#loading required packages
 library(raster)
 library(rgdal)
 library(caret)
 
+#----------------------------------------------------------------------------------------
+#loading data
 #loading classified image from April 2009
 class_0409 <- brick("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification\\class_LT05_L1TP_233073_20090417_20161027_01_T1.tif")
 plot(class_0409)
@@ -15,6 +28,7 @@ plot(val_shp, add=T)
 
 unique_classes <- unique(val_shp$classname)
 
+##----------------------------------------------------------------------------------------
 #extractingn classified values from raster and append to shapefile
 set.seed(25)
 xy_val <- lapply(unique_classes, function(class){
@@ -24,6 +38,7 @@ xy_val <- lapply(unique_classes, function(class){
   return(classpts)
 })
 
+#----------------------------------------------------------------------------------------
 #rbind the two dataframes into one object
 xy_val <- do.call("rbind", xy_val)
 plot(xy_val, add=T)
@@ -39,6 +54,7 @@ obs <- xy_val$class[!dup]
 #convert int to factors
 valFactor <- factor(pred, levels = c(0, 1), labels = c("no_water", "water"))
 
+#----------------------------------------------------------------------------------------
 confusionMatrix(obs, reference = valFactor)
 
 
