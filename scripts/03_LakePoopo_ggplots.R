@@ -1,9 +1,24 @@
-############################################
-##### CORRELATION OF ENVIRONMENTAL DATA ####
-############## PREC AND ET #################
-########### WITH WATER LEVELS ##############
-############################################
+##########################################################################################
+#### Lake Poopo, Bolivia: ggplots
+#### author: Magdalena Halbgewachs
+#### April 2019
+##########################################################################################
 
+##########################################################################################
+#### Background information
+
+### Study area: Lake Poopó, Bolivia
+### content:
+### 1.) data import
+### 2.) Plot precipitation
+### 3.) Plot evapotranspiration
+### 4.) Plot water area, comnined with prec, et, 
+### 5.) Plot water area Lake Titicaca, comnined with water area Lake Poopó 
+### 6.) Plot correlations of all environmental factors
+
+##########################################################################################
+
+#loading required packages
 #library(data.table)
 library(ggplot2)
 #devtools::install_github("thomasp85/patchwork")
@@ -13,12 +28,12 @@ library(patchwork)
 library(reshape2)
 library(corrplot)
 
-################################################################################
-#--------------------------------------------------------------------------------
-# data import
-#--------------------------------------------------------------------------------
-################################################################################
+##########################################################################################
+# 1.) data import
+##########################################################################################
+
 ###precipitation###
+
 #all months 1989 - 2018
 prec_mean_all <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\prec_mean.csv", header=T, sep=";")
 if(names(prec_mean_all)[1]=="ï..YEAR"){
@@ -40,8 +55,10 @@ if(names(prec_mean_july)[1]=="ï..YEAR"){
 }
 prec_mean_july[[1]] <- as.Date(prec_mean_july[[1]])
 
-#-------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------
+
 ###evapotranspiration###
+
 #all months 1989 - 2018
 et_mean_all <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\ET_mean.csv", header=T, sep=";")
 if(names(et_mean_all)[1]=="ï..YEAR"){
@@ -63,8 +80,10 @@ if(names(et_mean_july)[1]=="ï..YEAR"){
 }
 et_mean_july[[1]] <- as.Date(et_mean_july[[1]])
 
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------
+
 ###lake area###
+
 #only April 1989 - 2018 (based on df of index calculations)
 area_april <- area_df_april
 if(names(area_april)[1]=="ï..YEAR"){
@@ -79,8 +98,9 @@ if(names(area_july)[1]=="ï..YEAR"){
 }
 area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 
-#------
+#------------------------------
 ##only if df is not in current environment
+
 #area_april<- read.csv("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area_april.csv", header=T, sep=",")
 #area_april <- area_april[-c(1)] #remove first column
 #if(names(area_april)[1]=="ï..YEAR"){
@@ -97,16 +117,20 @@ area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 #area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 
 
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------
+
 ###lake area Titicaca###
+
 titicaca <- read.table("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Titicaca\\time_series_titicaca", sep = "", header = T, fill = T)
 if(names(titicaca)[1]=="ï..YEAR"){
   names(titicaca)[1]<- "YEAR"
 }
 titicaca[[1]] <- as.Date(titicaca[[1]])
 
-#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------
+
 ###save all data in one dataframe###
+
 #all April and July data
 df_data <- merge (area_april, area_july,by="YEAR", all=T)
 df_data <- merge (df_data, prec_mean_april, by="YEAR", all=T)
@@ -115,16 +139,16 @@ df_data <- merge (df_data, et_mean_april, by="YEAR", all=T)
 df_data <- merge (df_data, et_mean_july, by="YEAR", all=T)
 names(df_data) <- c ("YEAR", "A_APRIL", "A_JULY", "PREC_APRIL", "PREC_JULY", "ET_APRIL", "ET_JULY")
 
-#----------
 #all months 1989 - 2018
 df_data_all <- merge (et_mean_all, prec_mean_all,by="YEAR", all=T)
 names(df_data_all) <- c ("YEAR", "ET", "PREC")
 
+
 ################################################################################
-#--------------------------------------------------------------------------------
-# 1.) precipitation
-#--------------------------------------------------------------------------------
+# 2.) precipitation
 ################################################################################
+
+#precipitation all months between 1989 and 2018
 ggplot(data=df_data_all, aes(x=YEAR, y=PREC, group=1, color=legend)) +
   #data
   geom_bar(data=df_data_all, aes(x=YEAR, y=PREC, color="precipitation"), stat="identity", alpha=0.7, fill="red")+#, color="blue")+
@@ -142,10 +166,8 @@ ggplot(data=df_data_all, aes(x=YEAR, y=PREC, group=1, color=legend)) +
   labs(caption = "data source: Servicio Nacional de Meteorología e Hidrología de Bolivia")+
   theme_gray(base_size = 15) 
 
-#----------------------------
-#precipitation April and July
-#----------------------------
-
+#----------------------------------------------------------------------------------------
+#precipitation only April and July 1989 to 2019
 prec_plot <- ggplot(data=df_data, aes(x=YEAR, y=PREC_APRIL, group=1, color=legend)) +
   #data
   geom_bar(data=df_data, aes(x=YEAR, y=PREC_APRIL, color="April"),  stat="identity", alpha=0.3, width=300, fill="transparent", size=1) +#color="orangered4"
@@ -172,11 +194,11 @@ prec_plot <- ggplot(data=df_data, aes(x=YEAR, y=PREC_APRIL, group=1, color=legen
 prec_plot
 
 
-##################################################################################
-#--------------------------------------------------------------------------------
-# 2.) evapotranspiration
-#--------------------------------------------------------------------------------
-##################################################################################
+##########################################################################################
+# 3.) evapotranspiration
+##########################################################################################
+
+#evapotranspiratoin all months between 1989 and 2018
 ggplot(data=df_data_all, aes(x=YEAR, y=ET, group=1, color=legend)) +
   #data
   geom_bar(data=df_data_all, aes(x=YEAR, y=ET, color="evapotranspiration"), stat="identity", alpha=0.7, fill="red")+ #color="orangered4"
@@ -194,9 +216,9 @@ ggplot(data=df_data_all, aes(x=YEAR, y=ET, group=1, color=legend)) +
   labs(caption = "data source: Servicio Nacional de Meteorología e Hidrología de Bolivia")+
   theme_gray(base_size = 15)
 
-#-----------------------------------
-#evapotranspiration April and July
-#-----------------------------------
+#----------------------------------------------------------------------------------------
+
+#evapotranspiration only April and July 1989 to 2018
 et_plot <- ggplot(data=df_data, aes(x=YEAR, y=ET_APRIL, group=1, color=legend)) +
   #data
   geom_bar(data=df_data, aes(x=YEAR, y=ET_APRIL, color="April"), stat="identity", alpha=0.3, width=300, fill="transparent", size=1)+ #color="orangered4",
@@ -222,11 +244,11 @@ et_plot <- ggplot(data=df_data, aes(x=YEAR, y=ET_APRIL, group=1, color=legend)) 
 et_plot
 
 
-################################################################################
-#--------------------------------------------------------------------------------
-# 3.) water area
-#--------------------------------------------------------------------------------
-################################################################################
+##########################################################################################
+# 4.) water area Lake Poopó
+##########################################################################################
+
+#water area in April and July 1989 to 2019
 water_plot <- ggplot(data=df_data, aes(x=YEAR, y=A_APRIL, group=1, color=legend)) +
   #data
   geom_bar(data=df_data, aes(x=YEAR, y=A_APRIL, color="April"), stat="identity", alpha=0.2, width=300, fill="transparent", size=1)+ #color="orangered4"
@@ -246,62 +268,50 @@ water_plot <- ggplot(data=df_data, aes(x=YEAR, y=A_APRIL, group=1, color=legend)
                                   "2005-04-01", "2009-04-01", "2013-04-01",
                                   "2014-04-01", "2015-04-01", "2016-04-01", 
                                   "2017-04-01","2018-04-01")),date_labels = "%Y")+
-  #scale_color_manual(values = c('April' = 'black', 'July' = 'aquamarine4'))+
-  #scale_fill_manual(name='legendname',
-                    #values=c('orangered4','aquamarine4'),
-                    #labels=c('APRIL','JULY'))+
   ggtitle("Water area of Lake Poopó in April and July (1989-2018)")+
   labs(caption = "data: based on NDWI calculations (Landsat 5 and 8)")+
   theme_gray(base_size = 15)
 water_plot
-water_plot+et_plot
-water_plot+prec_plot
+
+water_plot+et_plot       #water area and evapotranspiration for April and July 1989 to 2018
+water_plot+prec_plot     #water area and precipitation for April and July 1989 to 2018
 
 
-###################################################################################
-#---------------------------------------------------------------------------------
-# 4.) Lake Titicaca
-#--------------------------------------------------------------------------------
-###################################################################################
+##########################################################################################
+# 5.) water area Lake Titicaca
+##########################################################################################
 
+#water area monthly 2002 to 2017
 water_titicaca <- ggplot(data=titicaca, aes(x=date, y=heights, group=1))+
+  #vizualisation
   geom_line(color="green4")+
   geom_point(size=1)+
-  geom_smooth(method='lm',formula=y~x, se=F, color="green4")+ #linear regression
-  #stat_smooth(method="lm", se=TRUE, fill=NA,formula=y ~ poly(x, 2, raw=TRUE),colour="yellow")  #3rd polynomial regression
-  ggtitle("Mean water level in Lake Titicaca (2002-2018)")+        #title name
-  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 15))+      #title size, specification
-  theme(legend.title = element_text(size = 10, face = "bold"))+                 #legend title size, specification
-  theme(legend.text = element_text(size = 6))+                                  #legend element size
+  geom_smooth(method='lm',formula=y~x, se=F, color="green4")+
+  #themes
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 15))+
+  theme(legend.title = element_text(size = 10, face = "bold"))+
+  theme(legend.text = element_text(size = 6))+
   theme(axis.text.y=element_text(angle = 90, hjust=1, size = 9))+
-  #scale_x_continuous(breaks = seq(2002, 2018, 1))+
-  #scale_x_date(date_labels="%b %y",date_breaks  ="6 month")+
-  #scale_x_discrete(limits=c("April *", "July *"))+
-  #scale_x_discrete(name ="date", limits=c("Apr","Jul"))+
+  #axis
   xlab("year")+
   ylab("water level (m a.s.l.)")+
-  #scale_x_continuous(breaks = c(11))
-  #scale_x_date(breaks = as.Date(c("2002-07-01", "2003-07-21", "2004-07-05", "2005-07-25", "2006-07-10", "2007-07-30",
-  #"2008-07-14", "2009-07-01", "2010-07-19", "2011-07-27", "2012-07-02",
-  #"2013-07-05", "2014-07-09", "2015-07-12", "2016-07-01", "2017-07-11", "2018-07-24")))+
-  #minor_breaks = as.Date(c("Jan 89", "Jan 99", "Jan 00", "Jan 01", "Jan 02", "Jan 03",
-  #"Jan 04", "Jan 05", "Jan 06", "Jan 07", "Jan 08", "Jan 09",
-  #"Jan 10", "Jan 11", "Jan 12", "Jan 13", "Jan 14", "Jan 15",
-  #"Jan 16", "Jan 17", "Jan 18"))) +
+  ggtitle("Mean water level in Lake Titicaca (2002-2018)")+
   labs(caption = "data: \nSchwatke et al. (2015): \nDAHITI - an innovative approach for estimating water level time series over inland waters using multi-mission satellite altimetry")+
   theme_gray(base_size = 15)
-water_titicaca+water_plot
+
+water_titicaca+water_plot #water area Lake Titicaca and Poopó 1989 to 2018
 
 
-####################################################################################
-#---------------------------------------------------------------------------------
-# 5.) CORRELATIONS
-#--------------------------------------------------------------------------------
-####################################################################################
+##########################################################################################
+# 6.) CORRELATIONS
+##########################################################################################
 
+#loading data
 corr <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\correlation.csv", header=T, sep=";")
 head(corr, 6)
+#rename columns
 colnames(corr)[1:4] <- c("evapotranspiration", "precipitation", "area Poopó", "area Titicaca") # handling missing values
+#matrix
 corr_na <-cor(corr, use = "complete.obs")
 res <- cor(corr_na)
 round(res, 2)
