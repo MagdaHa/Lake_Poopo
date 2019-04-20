@@ -22,10 +22,9 @@ library(sp)
 library(raster)
 library(RStoolbox)
 #library(devtools)
-library(backports)
 #install_github("MagdaHa/Lake_Poopo/ChangeDetectR")
+install.packages("ChangeDetectR")     #keine Installation möglich?!
 library(ChangeDetectR)
-
 
 #########################################################################################
 # 1.) creating subsets of all images
@@ -70,7 +69,7 @@ list_green <- list.files(cropped_bands_folder, pattern="green", full.names = T, 
 list_nir <- list.files(cropped_bands_folder, pattern="nir", full.names = T, no.. = T)
 
 #----------------------------------------------------------------------------------------
-#calculating ndwi
+#calculating NDWI
 for (i in 1:length (list_nir)) {
   #ndwi calculation
   nir <- brick(list_nir[i])
@@ -115,7 +114,7 @@ classification_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and 
 change_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\change_minus"
 
 #creating character vectors of loaded binary map images
-list_change_april <- list.files(classification_folder, pattern="04", full.names = T, no.. = T) #geth nicht! zu viele Bilder!
+list_change_april <- list.files(classification_folder, pattern="04", full.names = T, no.. = T)
 list_change_july <- list.files(classification_folder, pattern="07", full.names = T, no.. = T)
 
 #----------------------------------------------------------------------------------------
@@ -149,9 +148,9 @@ list_area_july <- list.files(classification_folder, pattern="07", full.names = T
 area_df <- data.frame(matrix(ncol = 2, nrow = 22))
 names(area_df) <- c("DATE", "AREA")
 area_df$DATE <- c("1989-04-01", "1989-07-01", "1995-04-01", "1989-07-01", "1999-04-01", "1999-07-01", 
-                  "2005-04-01", "2005-07-01", "2009-04-01", "2009-07-01",
-                  "2013-04-01", "2013-07-01", "2014-04-01", "2014-07-01", "2015-04-01", 
-                  "2015-07-01", "2016-04-01", "2016-07-01", "2017-04-01", "2017-07-01", "2018-04-01", "2018-07-01")
+                  "2005-04-01", "2005-07-01", "2009-04-01", "2009-07-01","2013-04-01", "2013-07-01",
+                  "2014-04-01", "2014-07-01", "2015-04-01", "2015-07-01", "2016-04-01", "2016-07-01",
+                  "2017-04-01", "2017-07-01", "2018-04-01", "2018-07-01")
 area_df$AREA <- 0
 
 #for April
@@ -161,7 +160,7 @@ area_df_april$YEAR <- c("1989-04-1", "1995-04-1", "1999-04-1", "2005-04-1", "200
                   "2013-04-1", "2014-04-1", "2015-04-1", "2016-04-1", "2017-04-1", "2018-04-1")
 area_df_april$AREA <- 0
 
-#for Kuly
+#for July
 area_df_july <- data.frame(matrix(ncol = 2, nrow = 11))
 names(area_df_july) <- c("YEAR", "AREA")
 area_df_july$YEAR <- c("1989-07-01", "1995-07-01", "1999-07-01", "2005-07-01", "2009-07-01",
@@ -172,18 +171,18 @@ area_df_july$AREA <- 0
 #area calculations:
 #all dates
 for (i in 1:length(list_area)) {
-  raster <- brick(list_area[i])
+  x <- brick(list_area[i])
   year <- getYear(list_area)
   area_df[i,2] <- calc_water_area(raster)
-  message(paste0("finished year:", year)) #incorrect
+  message(paste0("finished year:", year))
 }
 
 #for April
 for (i in 1:length(list_area_april)) {
-  raster <- brick(list_area_april[i])
+  x <- brick(list_area_april[i])
   year <- getYear(list_area_april)
   area_df_april[i,2] <- calc_water_area(raster)
-  message(paste0("finished year:", year)) #incorrect
+  message(paste0("finished year:", year))
 }
 
 #for July
@@ -191,13 +190,13 @@ for (i in 1:length(list_area_july)) {
   x <- brick(list_area_july[i])
   year <- getYear(list_area_july)
   area_df_july[i,2] <- calc_water_area(x)
-  message(paste0("finished year:", year)) #incorrect
+  message(paste0("finished year:", year))
 }
 
 #----------------------------------------------------------------------------------------
 #save data frames as csv
 setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat")
-write.csv(area_df, file = "area_new.csv", sep = ";", na="NA", dec = ".")
+write.csv(area_df, file = "area_all.csv", sep = ";", na="NA", dec = ".")
 write.csv(area_df_april, file = "area_april.csv", sep = ";", na="NA", dec = ".")
 write.csv(area_df_july, file = "area_july.csv", sep = ";", na="NA", dec = ".")
 
