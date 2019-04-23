@@ -51,10 +51,11 @@ dup <- duplicated(pred)
 pred <- pred[!dup,"class_LT05_L1TP_233073_20090417_20161027_01_T1"]
 obs <- xy_val$class[!dup]
 
-#convert int to factors
+#convert integer to factors
 valFactor <- factor(pred, levels = c(0, 1), labels = c("no_water", "water"))
 
 #----------------------------------------------------------------------------------------
+#gives back the confusion matrix
 confusionMatrix(obs, reference = valFactor)
 
 
