@@ -1,26 +1,26 @@
 ---
-title: 'Analysis of droughts caused by climate variability at Lake Poopó, Bolivia:'
-author: "Monitoring the lake extent based on a Landsat time series from 1989 to 2018"
-date: "Magdalena Halbgewachs, 24 April 2019"
+title: 'Analysis of droughts caused by climate variability at Lake Poopó, Bolivia'
+author: "Magdalena Halbgewachs"
+date: "29 April 2019"
 output:
   ioslides_presentation: default
   beamer_presentation: default
 ---
+```{r, include=FALSE}
+#slides > slide.backdrop {
+ #background: white;
+#}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## geographical conditions
-
-- Lake Poopó, located in the Bolivian Altiplano
-- extremely regulated by environmental influences
+##investigation area Lake Poopó
+- located in the Bolivian Altiplano
 - mean elevation: 3810 m a.s.l.
-- extreme spatial and temporal fluctuations in water resources and levels
-- The Desaguadero River transports water from Lake Titicaca to Lake Poopó over 300 km
-- declared dry in 2015 but still fills periodically with water
+- Landsat time series from 1989 to 2018
 
-##investigation area
 ```{r, echo=FALSE, warning=FALSE, error=FALSE}
 library(maps)
 library(mapdata)
@@ -29,11 +29,25 @@ points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
 plot(map)
 ```
 
-##NDWI
 
+##investigation area Lake Poopó
+- extremely regulated by environmental influences
+- declared dry in 2015 but still fills periodically with water
+- Desaguadero River: transports water from Lake Titicaca to Lake Poopó
+
+```{r, echo=FALSE, warning=FALSE, error=FALSE}
+library(maps)
+library(mapdata)
+map <- map('worldHires','Bolivia', col = 'grey', fill=T)
+points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
+plot(map)
+```
+
+
+##NDWI
 NDWI=(GREEN-NIR)/(GREEN+NIR)
 
-```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE, results='hide'}
 library(rgdal)
 library(raster)
 library(ggplot2)
@@ -61,8 +75,7 @@ plot(ndwi)
 
 
 ## lake area extent and bathymetry
-
-```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE, results='hide'}
 class <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/classification"
 all_class <- list.files(class, full.names = TRUE, pattern = ".tif$")
 #----------------------------------------------------------------------------------------
@@ -89,8 +102,9 @@ classif <- levelplot(class_stack,
 plot(classif)
 ```
 
+
 ##change detection
-```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE, , results='hide'}
 minus <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/change_minus"
 all_minus <- list.files(minus, full.names = TRUE, pattern = ".tif$")
 #----------------------------------------------------------------------------------------
@@ -111,19 +125,16 @@ change_det <- levelplot(minus_stack,
 plot(change_det)
 ```
 
+
 ```{r, warning=FALSE}
 #loading required packages
-#library(data.table)
 library(ggplot2)
-#devtools::install_github("thomasp85/patchwork")
 library(patchwork)
-#library(scales)
-#library(tidyverse)
 library(reshape2)
 library(corrplot)
 
 ##########################################################################################
-# 1.) data import
+# data import
 ##########################################################################################
 ###precipitation and evapotranspiration all months 1989 - 2018###
 df_data_all <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\prec_et_mean_all.csv", header=T, sep=";")
@@ -177,16 +188,14 @@ if(names(titicaca)[1]=="ï..YEAR"){
 titicaca[[1]] <- as.Date(titicaca[[1]])
 ```
 
+
 ##lake area extent in km²
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.height = 5, fig.width =8}
 library(ggplot2)
-#devtools::install_github("thomasp85/patchwork")
 library(patchwork)
-#library(scales)
-#library(tidyverse)
 library(reshape2)
-library(corrplot)
+#library(corrplot)
 #water area in April and July 1989 to 2019
 water_plot <- ggplot(data=df_data, aes(x=YEAR, y=A_APRIL, group=1, color=legend)) +
   #data
@@ -205,25 +214,17 @@ water_plot <- ggplot(data=df_data, aes(x=YEAR, y=A_APRIL, group=1, color=legend)
   ylab("area (km²)")+
   scale_x_date(breaks = as.Date(c("1989-04-01", "1995-04-01", "1999-04-01",
                                   "2005-04-01", "2009-04-01", "2013-04-01",
-                                  "2014-04-01", "2015-04-01", "2016-04-01", 
-                                  "2017-04-01","2018-04-01")),date_labels = "%Y")+
+                                  "2015-04-01", "2018-04-01")),date_labels = "%Y")+
   #ggtitle("Water area of Lake Poopó in April and July (1989-2018)")+
   labs(caption = "data: based on NDWI calculations (Landsat 5 and 8)")+
   theme_gray(base_size = 15)
 plot(water_plot)
 ```
 
+
 ##precipitation
 
-```{r, echo=FALSE, warning=FALSE}
-library(ggplot2)
-#devtools::install_github("thomasp85/patchwork")
-library(patchwork)
-#library(scales)
-#library(tidyverse)
-library(reshape2)
-library(corrplot)
-#----------------------------------------------------------------------------------------
+```{r, echo=FALSE, warning=FALSE,  fig.height = 5, fig.width =8}
 #precipitation only April and July 1989 to 2019
 prec_plot <- ggplot(data=df_data, aes(x=YEAR, y=PREC_APRIL, group=1, color=legend)) +
   #data
@@ -242,8 +243,7 @@ prec_plot <- ggplot(data=df_data, aes(x=YEAR, y=PREC_APRIL, group=1, color=legen
   ylab("precipitation (mm)")+
   scale_x_date(breaks = as.Date(c("1989-04-01", "1995-04-01", "1999-04-01",
                                   "2005-04-01", "2009-04-01", "2013-04-01",
-                                  "2014-04-01", "2015-04-01", "2016-04-01", 
-                                  "2017-04-01","2018-04-01")),date_labels = "%Y")+
+                                  "2015-04-01", "2018-04-01")),date_labels = "%Y")+
   #ggtitle("Mean precipitation in the Lake Poopó area in April and July (1989-2018)")+
   labs(caption = "data source: Servicio Nacional de Meteorología e Hidrología de Bolivia")+
   theme_gray(base_size = 15)
@@ -254,7 +254,7 @@ plot(prec_plot)
 
 ##evapotranspiration
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE,  fig.height = 5, fig.width =8}
 et_plot <- ggplot(data=df_data, aes(x=YEAR, y=ET_APRIL, group=1, color=legend)) +
   #data
   geom_bar(data=df_data, aes(x=YEAR, y=ET_APRIL, color="April"), stat="identity", alpha=0.3, width=300, fill="transparent", size=1)+
@@ -272,8 +272,7 @@ et_plot <- ggplot(data=df_data, aes(x=YEAR, y=ET_APRIL, group=1, color=legend)) 
   ylab("evapotranspiration (mm)")+
   scale_x_date(breaks = as.Date(c("1989-04-01", "1995-04-01", "1999-04-01",
                                   "2005-04-01", "2009-04-01", "2013-04-01",
-                                  "2014-04-01", "2015-04-01", "2016-04-01", 
-                                  "2017-04-01","2018-04-01")),date_labels = "%Y")+
+                                  "2015-04-01", "2018-04-01")),date_labels = "%Y")+
   #ggtitle("Mean evapotranspiration in the Lake Poopó area in April and July (1989-2018)")+
   labs(caption = "data source: Servicio Nacional de Meteorología e Hidrología de Bolivia")+
   theme_gray(base_size = 15)
@@ -281,9 +280,10 @@ plot(et_plot)
 #plot(et_plot+water_plot)
 ```
 
+
 ##correlations
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,  fig.height = 5, fig.width =7}
 #loading data
 corr <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\correlation.csv", header=T, sep=";")
 #rename columns
@@ -297,3 +297,6 @@ res <- cor(corr_na)
 corrplot <- corrplot(res, method="number", tl.col = "black", type="upper", order="hclust", tl.srt = 45)
 plot(corrplot)
 ```
+
+
+##Thank you for your attention!
