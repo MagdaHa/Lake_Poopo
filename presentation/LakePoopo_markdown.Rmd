@@ -26,6 +26,7 @@ library(maps)
 library(mapdata)
 map <- map('worldHires','Bolivia', col = 'grey', fill=T)
 points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
+map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
 plot(map)
 ```
 
@@ -40,6 +41,7 @@ library(maps)
 library(mapdata)
 map <- map('worldHires','Bolivia', col = 'grey', fill=T)
 points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
+map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
 plot(map)
 ```
 
@@ -279,6 +281,35 @@ et_plot <- ggplot(data=df_data, aes(x=YEAR, y=ET_APRIL, group=1, color=legend)) 
 plot(et_plot)
 #plot(et_plot+water_plot)
 ```
+
+
+##Lake Titicaca water levels
+
+```{r,  echo=FALSE, warning=FALSE,  fig.height = 5, fig.width =8}
+titicaca <- read.table("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Titicaca\\time_series_titicaca", sep = "", header = T, fill = T)
+if(names(titicaca)[1]=="ï..YEAR"){
+  names(titicaca)[1]<- "YEAR"
+}
+titicaca[[1]] <- as.Date(titicaca[[1]])
+
+water_titicaca <- ggplot(data=titicaca, aes(x=date, y=heights, group=1))+
+  #vizualisation
+  geom_line(color="green4")+
+  geom_point(size=1)+
+  geom_smooth(method='lm',formula=y~x, se=F, color="green4")+
+  #themes
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 15))+
+  theme(legend.title = element_text(size = 10, face = "bold"))+
+  theme(legend.text = element_text(size = 6))+
+  theme(axis.text.y=element_text(angle = 90, hjust=1, size = 9))+
+  #axis
+  xlab("year")+
+  ylab("water level (m a.s.l.)")+
+  labs(caption = "data: Schwatke et al. 2015)+
+  theme_gray(base_size = 15)
+plot(water_titicaca)
+```
+
 
 
 ##correlations
