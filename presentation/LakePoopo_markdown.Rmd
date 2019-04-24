@@ -26,7 +26,6 @@ library(maps)
 library(mapdata)
 map <- map('worldHires','Bolivia', col = 'grey', fill=T)
 points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
-map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
 plot(map)
 ```
 
@@ -305,7 +304,7 @@ water_titicaca <- ggplot(data=titicaca, aes(x=date, y=heights, group=1))+
   #axis
   xlab("year")+
   ylab("water level (m a.s.l.)")+
-  labs(caption = "data: Schwatke et al. 2015)+
+  labs(caption = "data: Schwatke et al. 2015")+
   theme_gray(base_size = 15)
 plot(water_titicaca)
 ```
