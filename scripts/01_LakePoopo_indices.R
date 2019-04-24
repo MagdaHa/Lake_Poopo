@@ -23,7 +23,7 @@ library(raster)
 library(RStoolbox)
 #library(devtools)
 #install_github("MagdaHa/Lake_Poopo/ChangeDetectR")
-install.packages("ChangeDetectR")     #keine Installation möglich?!
+install.packages("ChangeDetectR")     #own package
 library(ChangeDetectR)
 
 #########################################################################################
@@ -194,7 +194,7 @@ for (i in 1:length(list_area_july)) {
 }
 
 #----------------------------------------------------------------------------------------
-#save data frames as csv
+#save data frames/lake areas as csv
 setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat")
 write.csv(area_df, file = "area_all.csv", sep = ";", na="NA", dec = ".")
 write.csv(area_df_april, file = "area_april.csv", sep = ";", na="NA", dec = ".")
