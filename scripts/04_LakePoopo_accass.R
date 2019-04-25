@@ -9,6 +9,9 @@
 
 ### Study area: Lake Poopó, Bolivia
 
+### used dataset:
+### - classified image from April 2009 as reference data set
+### - validation areas
 ##########################################################################################
 
 #loading required packages
