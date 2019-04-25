@@ -12,9 +12,9 @@
 ### 1.) data import
 ### 2.) Plot precipitation
 ### 3.) Plot evapotranspiration
-### 4.) Plot water area, comnined with prec, et, 
-### 5.) Plot water area Lake Titicaca, comnined with water area Lake Poopó 
-### 6.) Plot correlations of all environmental factors
+### 4.) Plot water area, combined with precipitation/evapotranspiration 
+### 5.) Plot water area Lake Titicaca, combined with water area Lake Poopó 
+### 6.) Plot correlations of all environmental factors April and July 1989 - 2018
 
 ##########################################################################################
 
