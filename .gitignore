@@ -32,6 +32,7 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
+/presentation/LakePoopo_markdown.html
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 .Rproj.user
