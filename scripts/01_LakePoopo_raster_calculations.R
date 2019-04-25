@@ -1,19 +1,28 @@
 ##########################################################################################
-#### Lake Poopo, Bolivia
+#### Lake Poopo, Bolivia: Raster calculations
 #### author: Magdalena Halbgewachs
 #### April 2019
 ##########################################################################################
 
 ##########################################################################################
-#### Background information
+### Background information
 
 ### Study area: Lake Poopó, Bolivia
+### - located in the Bolivian Altiplano
+### - mean elevation: 3810 m a.s.l.
+### - extremely regulated by environmental influences (ENSO effect)
+### - declared dry in 2015 but still fills periodically with water
+### - Desaguadero River: transports water from Lake Titicaca to Lake Poopó (dependency)
+
 ### content:
+### Landsat time series from 1989 to 2018 for the months April (wet season) and July (dry season)
 ### 1.) cropping the downloaded Landsat scenes to an predefined extent
 ### 2.) calculating the NDWI for the years 1989 to 2018
 ### 3.) image classification, binary mpa of the lake extents
 ### 4.) change detection in water level per year (based on NDWI)
 ### 5.) extracting the water area in sqkm for each scene
+
+### package ChangeDetectR was developed for further analysis
 
 #########################################################################################
 
