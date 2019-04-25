@@ -24,6 +24,10 @@
 
 ### package ChangeDetectR was developed for further analysis
 
+### used datasets:
+### - 10 Landsat 5 scenes from April and July 1989, 1995, 1999, 2005, 2009
+### - 12 Landsat 8 scenes from April and July 2013 - 2018
+
 #########################################################################################
 
 #loading required packages

@@ -16,6 +16,15 @@
 ### 5.) Plot water area Lake Titicaca, combined with water area Lake Poopó 
 ### 6.) Plot correlations of all environmental factors April and July 1989 - 2018
 
+### used datasets:
+### - precipitation data from 1989 - 2018 from 6 weather stations around Lake Poopó
+###  (Servicio Nacional de Meteorología e Hidrología de Bolivia;http://www.senamhi.gob.bo/sismet; http://www.senamhi.gob.bo/record_estaciones.php)
+### - evapotranspiration data from 1989 - 2018 from 6 weather stations around Lake Poopó
+###  (Servicio Nacional de Meteorología e Hidrología de Bolivia;http://www.senamhi.gob.bo/sismet; http://www.senamhi.gob.bo/record_estaciones.php)
+### - previous calculated lake areas 1989 - 2018
+### - height of Lake Titicaca 2002 - 2017
+### (Schwatke et al. (2015): DAHITI - an innovative approach for estimating water level time series over inland waters using multi-mission satellite altimetry)
+
 ##########################################################################################
 
 #loading required packages

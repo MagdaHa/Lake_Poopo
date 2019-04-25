@@ -13,6 +13,11 @@
 ### 2.) Plot classified (binary) images and bathymetric lines
 ### 3.) Plot Change Detection
 
+### used datasets:
+### - previous calculated NDWI for April and July 1989 - 2018
+### - previous classified images for April and July 1989 - 2018
+### - bathymetric lines of Lake Poopó
+
 ##########################################################################################
 
 #loading required packages
