@@ -64,9 +64,9 @@ names(class_stack)
 rasterNames  <- gsub("class_","", names(class_stack))
 
 #----------------------------------------------------------------------------------------
-#load bathymetry lines
+#load bathymetric lines
 bath.shp <- readOGR("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Lake_Poopo\\bathymetry_qgis.shp")
-crs(bath.shp)
+crs(bath.shp)       #check coordinate system of both data sets
 crs(class_stack)
 
 #----------------------------------------------------------------------------------------
@@ -107,9 +107,6 @@ levelplot(minus_stack,
           main="Loss and gain of water area\nLake Poopó, Bolivia (1989 - 2018)",
           col.regions=cols,
           names.attr=rasterNames,
-          #col=cols,
-          #col = c("white", "blue"),
-          #par.settings=GrTheme(),
           scales=list(draw=FALSE ))
 
 
@@ -120,3 +117,36 @@ urb_anim <- tm_shape(bath.shp)+tm_polygons(bath.shp) +
   tm_raster(class_stack$class_1989_04)+
   tm_facets(along = "DATE", free.coords = FALSE)
 urb_anim  
+
+install.packages("animate_raster")
+devtools::install_github("16EAGLE/moveVis")
+setwd("C:\\02_Studium\\02_Master\\01_Semester 1\\MB2_Introduction to Programming and Geostatistics_Wegmann")
+install.packages("moveVis-0.9.9.tar.gz", repos = NULL)
+install.packages("moveVis")
+library(moveVis)
+install.packages("animate_raster")
+library(animate_raster)
+anim_in_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\classification"
+anim_out_folder <- "D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat"
+anim_list <- list.files(anim_in_folder, pattern = "class", full.names = T, no.. = T)
+
+#------------------------------
+library(animation)
+ani.options(interval=.05)
+
+saveGIF({
+  for (i in 1:length(anim_list)) {
+    rc <- anim_list
+    plot(rc, col=c("green3", "white"), legend=FALSE, main = paste("Day", i))
+  }
+}) 
+
+
+
+
+
+animate_raster(anim_list, out_dir=anim_out_folder, out_format="gif", layer_type="gradient")
+
+library(raster)
+anim_brick <- brick(system.file(anim_in_folder, package="raster"))
+animate(anim_brick, n=22)
