@@ -38,7 +38,7 @@ library(corrplot)
 # 1.) data import
 ##########################################################################################
 ###precipitation and evapotranspiration all months 1989 - 2018
-df_data_all <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\prec_et_mean_all.csv", header=T, sep=";")
+df_data_all <- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\prec_et_mean_all.csv", header=T, sep=";")
 if(names(df_data_all)[1]=="ï..YEAR"){             #replaces mysterious column name
   names(df_data_all)[1]<- "YEAR"
 }
@@ -47,7 +47,7 @@ names(df_data_all) <- c ("YEAR", "PREC", "ET")  #rename columns
 
 #----------------------------------------------------------------------------------------
 ###precipitation and evapotranspiration April and July 1989 - 2018
-df_data <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\prec_et_april_july.csv", header=T, sep=";")
+df_data <- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\prec_et_april_july.csv", header=T, sep=";")
 if(names(df_data)[1]=="ï..YEAR"){             #replaces mysterious column name
   names(df_data)[1]<- "YEAR"
 }
@@ -71,23 +71,24 @@ if(names(area_july)[1]=="ï..YEAR"){
 }
 area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 
-#------------------------------
+#------------------------------!!!!!-----------
 ##only if df is not in current environment (not loaded from script 01)
 
-#area_april<- read.csv("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area_april.csv", header=T, sep=",")
+area_april<- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\area_april.csv", header=T, sep=";")
 #area_april <- area_april[-c(1)] #remove first column
-#if(names(area_april)[1]=="ï..YEAR"){
-#names(area_april)[1]<- "YEAR"
-#}
-#area_april[[1]] <- as.Date(area_april[[1]], origin="1989-04-1")
+if(names(area_april)[1]=="ï..YEAR"){
+  names(area_april)[1]<- "YEAR"
+}
+area_april[[1]] <- as.Date(area_april[[1]], origin="1989-04-1")
 
 ##only if df is not in current environment
-#area_july <- read.csv("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat\\area_july.csv", header=T, sep=",")
+area_july <- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\area_july.csv", header=T, sep=";")
 #area_july <- area_july[-c(1)] #remove first column
-#if(names(area_july)[1]=="ï..YEAR"){
-  #names(area_july)[1]<- "YEAR"
-#}
-#area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
+if(names(area_july)[1]=="ï..YEAR"){
+  names(area_july)[1]<- "YEAR"
+}
+area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
+#------------------------------!!!!!-----------
 
 #----------------------------------------------------------------------------------------
 ###save all data from April and July in one dataframe
@@ -99,7 +100,7 @@ names(df_data) <- c ("YEAR", "PREC_APRIL", "PREC_JULY", "ET_APRIL", "ET_JULY", "
 #----------------------------------------------------------------------------------------
 ###lake area Titicaca 2002 - 2017
 
-titicaca <- read.table("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\Titicaca\\time_series_titicaca", sep = "", header = T, fill = T)
+titicaca <- read.table("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\time_series_titicaca", sep = "", header = T, fill = T)
 if(names(titicaca)[1]=="ï..YEAR"){
   names(titicaca)[1]<- "YEAR"
 }
@@ -272,7 +273,7 @@ water_titicaca+water_plot #water area Lake Titicaca and Poopó 1989 to 2018
 ##########################################################################################
 
 #loading data only April and July 1989 - 2018
-corr <- read.csv("C:\\02_Studium\\02_Master\\01_Semester 1\\00_paper_work\\01_Lakes\\Lake_Poopó\\correlation.csv", header=T, sep=";")
+corr <- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\correlation.csv", header=T, sep=";")
 head(corr, 6)
 #rename columns
 colnames(corr)[1:4] <- c("evapotranspiration", "precipitation", "area Poopó", "area Titicaca") # handling missing values
