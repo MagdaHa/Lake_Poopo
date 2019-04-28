@@ -1,6 +1,7 @@
 ## Role of climate variability of droughts of Lake Poopó between 1989 and 2018 assessed by remote sensing data
 Lake Poopó in the Bolivian Altiplano is strongly affected by environmental influences. The basin is characterized by extreme spatial and temporal fluctuations in water resources and levels. The lake was declared dry in 2015, but still fills periodically with water.
 Landsat scenes were used to calculate the fluctuating lake area for the years 1989 to 2018, as well as the annual decrease in water masses. From both precipitation and evapotranspiration rates, as well as the Lake Titicaca water levels, correlations between these and the water levels of Lake Poopó could be found. The lake is less dependent on precipitation than on increasing evaporation rates and decreasing inflow from Lake Titicaca, which are all related to the ENSO effect. Drying out also has a considerable impact on the population, which is no longer able to farm due to the lack of freshwater reservoirs and has to resettle.
+
 The package "ChangeDetectR" was developed for the calculations.
 
 **used datasets:**
