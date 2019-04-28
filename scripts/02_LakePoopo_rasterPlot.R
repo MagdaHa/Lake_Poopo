@@ -30,6 +30,7 @@ library(maptools)
 ##########################################################################################
 # 1.) NDWI 
 ##########################################################################################
+#loading all NDWI images with the pattern TIF, stored as list
 NDWI <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/NDWI"
 all_NDWI <- list.files(NDWI, full.names = TRUE, pattern = ".tif$")
 all_NDWI
@@ -56,6 +57,7 @@ levelplot(NDWI_stack,
 ##########################################################################################
 # 2.) CLASSIFICATION AND BATHYMETRY 
 ##########################################################################################
+#loading all classified images with the pattern TIF, stored as list
 class <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/classification"
 all_class <- list.files(class, full.names = TRUE, pattern = ".tif$")
 all_class
@@ -92,6 +94,7 @@ levelplot(class_stack,
 ##########################################################################################
 # 3.) CHANGE DETECTION
 ##########################################################################################
+#loading all change detection images with the pattern TIF, stored as list
 minus <- "D:/01_Uni/02_Master/MB1_Digital Image Analysis and GIS/00_final_project/01_Landsat/change_minus"
 all_minus <- list.files(minus, full.names = TRUE, pattern = ".tif$")
 all_minus
