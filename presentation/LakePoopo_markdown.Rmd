@@ -67,7 +67,6 @@ rasterNames  <- gsub("NDWI_","", names(NDWI_stack))
 cols <- colorRampPalette(brewer.pal(11,"Spectral"))    #  number of colors
 
 ndwi <- levelplot(NDWI_stack,
-          main="NDWI\nLake Poopó, Bolivia (1989 - 2018)",
           col.regions=cols,
           names.attr=rasterNames,                     # using new defined names
           scales=list(draw=FALSE ))                  # remove axes labels & ticks
@@ -93,7 +92,6 @@ cols <- rasterTheme(region = brewer.pal("Blues", n=3))
 cuts <- c(0.1, 0.5, 1.1)
 
 classif <- levelplot(class_stack,
-          main="Lake area\nLake Poopó, Bolivia (1989 - 2018)",
           par.settings=cols,
           at=cuts,
           names.attr=rasterNames,
@@ -119,7 +117,6 @@ rasterNames  <- gsub("change_","", names(minus_stack))
 cols <- colorRampPalette(brewer.pal(9,"RdBu"))
 
 change_det <- levelplot(minus_stack,
-          main="Loss and gain of water area\nLake Poopó, Bolivia (1989 - 2018)",
           col.regions=cols,
           names.attr=rasterNames,
           scales=list(draw=FALSE ))
