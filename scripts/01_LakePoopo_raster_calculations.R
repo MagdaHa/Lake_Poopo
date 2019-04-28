@@ -34,9 +34,9 @@
 library(sp)
 library(raster)
 library(RStoolbox)
-#library(devtools)
-#install_github("MagdaHa/Lake_Poopo/ChangeDetectR")
-install.packages("ChangeDetectR")     #own package
+library(devtools)
+install_github("MagdaHa/Lake_Poopo/ChangeDetectR")
+#install.packages("ChangeDetectR")     #own package
 library(ChangeDetectR)
 
 #########################################################################################
@@ -158,13 +158,13 @@ list_area_july <- list.files(classification_folder, pattern="07", full.names = T
 #----------------------------------------------------------------------------------------
 #create data frames: 
 #for all dates
-area_df <- data.frame(matrix(ncol = 2, nrow = 22))
-names(area_df) <- c("DATE", "AREA")
+area_df <- data.frame(matrix(ncol = 2, nrow = 22))  #dataframe with 2 columns and 22 rows
+names(area_df) <- c("DATE", "AREA")                 #renaming columns
 area_df$DATE <- c("1989-04-01", "1989-07-01", "1995-04-01", "1989-07-01", "1999-04-01", "1999-07-01", 
                   "2005-04-01", "2005-07-01", "2009-04-01", "2009-07-01","2013-04-01", "2013-07-01",
                   "2014-04-01", "2014-07-01", "2015-04-01", "2015-07-01", "2016-04-01", "2016-07-01",
-                  "2017-04-01", "2017-07-01", "2018-04-01", "2018-07-01")
-area_df$AREA <- 0
+                  "2017-04-01", "2017-07-01", "2018-04-01", "2018-07-01") #filling column DATE with relevant dates
+area_df$AREA <- 0                                   #filling column AREA with 0
 
 #for April
 area_df_april <- data.frame(matrix(ncol = 2, nrow = 11))
@@ -185,7 +185,7 @@ area_df_july$AREA <- 0
 #all dates
 for (i in 1:length(list_area)) {
   x <- brick(list_area[i])
-  year <- getYear(list_area)
+  year <- getYear(list_area[i])
   area_df[i,2] <- calc_water_area(raster)
   message(paste0("finished year:", year))
 }
@@ -193,7 +193,7 @@ for (i in 1:length(list_area)) {
 #for April
 for (i in 1:length(list_area_april)) {
   x <- brick(list_area_april[i])
-  year <- getYear(list_area_april)
+  year <- getYear(list_area_april[i])
   area_df_april[i,2] <- calc_water_area(raster)
   message(paste0("finished year:", year))
 }
@@ -201,14 +201,14 @@ for (i in 1:length(list_area_april)) {
 #for July
 for (i in 1:length(list_area_july)) {
   x <- brick(list_area_july[i])
-  year <- getYear(list_area_july)
+  year <- getYear(list_area_july[i])
   area_df_july[i,2] <- calc_water_area(x)
   message(paste0("finished year:", year))
 }
 
 #----------------------------------------------------------------------------------------
 #save data frames/lake areas as csv
-setwd("D:\\01_Uni\\02_Master\\MB1_Digital Image Analysis and GIS\\00_final_project\\01_Landsat")
+setwd("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables")
 write.csv(area_df, file = "area_all.csv", sep = ";", na="NA", dec = ".")
 write.csv(area_df_april, file = "area_april.csv", sep = ";", na="NA", dec = ".")
 write.csv(area_df_july, file = "area_july.csv", sep = ";", na="NA", dec = ".")
