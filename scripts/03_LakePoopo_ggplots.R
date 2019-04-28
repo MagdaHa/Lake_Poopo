@@ -64,7 +64,7 @@ if(names(area_april)[1]=="ï..YEAR"){
 }
 area_april[[1]] <- as.Date(area_april[[1]], origin="1989-04-01")
 
-#only July 1989 - 2018 (based on df of index calculations)
+#only July 1989 - 2018 (based on script 01 (area calculation))
 area_july <- area_df_july
 if(names(area_july)[1]=="ï..YEAR"){
   names(area_july)[1]<- "YEAR"
@@ -72,7 +72,7 @@ if(names(area_july)[1]=="ï..YEAR"){
 area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 
 #------------------------------!!!!!-----------
-##only if df is not in current environment (not loaded from script 01)
+##only if area_df_april/july is not in current environment (not loaded from script 01)
 
 area_april<- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\area_april.csv", header=T, sep=";")
 #area_april <- area_april[-c(1)] #remove first column
@@ -95,7 +95,6 @@ area_july[[1]] <- as.Date(area_july[[1]], origin="1989-07-1")
 df_data <- merge (df_data, area_april,by="YEAR", all=T)
 df_data <- merge (df_data, area_july, by="YEAR", all=T)
 names(df_data) <- c ("YEAR", "PREC_APRIL", "PREC_JULY", "ET_APRIL", "ET_JULY", "A_APRIL", "A_JULY")
-
 
 #----------------------------------------------------------------------------------------
 ###lake area Titicaca 2002 - 2017
@@ -132,7 +131,7 @@ ggplot(data=df_data_all, aes(x=YEAR, y=PREC, group=1, color=legend)) +
   theme_gray(base_size = 15) 
 
 #----------------------------------------------------------------------------------------
-#precipitation only April and July 1989 to 2019
+#precipitation only April and July 1989 to 2018
 prec_plot <- ggplot(data=df_data, aes(x=YEAR, y=PREC_APRIL, group=1, color=legend)) +
   #data
   geom_bar(data=df_data, aes(x=YEAR, y=PREC_APRIL, color="April"),  stat="identity", alpha=0.3, width=300, fill="transparent", size=1) +
@@ -274,11 +273,11 @@ water_titicaca+water_plot #water area Lake Titicaca and Poopó 1989 to 2018
 
 #loading data only April and July 1989 - 2018
 corr <- read.csv("D:\\01_Uni\\02_Master\\01_Lake_Poopo\\02_data_tables\\correlation.csv", header=T, sep=";")
-head(corr, 6)
+head(corr,10)
 #rename columns
-colnames(corr)[1:4] <- c("evapotranspiration", "precipitation", "area Poopó", "area Titicaca") # handling missing values
+colnames(corr)[1:4] <- c("evapotranspiration", "precipitation", "area Poopó", "area Titicaca")
 #matrix
-corr_na <-cor(corr, use = "complete.obs")
+corr_na <-cor(corr, use = "complete.obs") # handling missing values
 res <- cor(corr_na)
 round(res, 2)
 
