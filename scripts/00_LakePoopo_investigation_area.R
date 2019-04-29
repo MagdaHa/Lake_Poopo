@@ -16,21 +16,20 @@
 #loading required packages
 library(maps)
 library(mapdata)
+library(leaflet)
 
 #----------------------------------------------------------------------------------------
-#mapping, version 1
-map('worldHires','Bolivia', col = 'grey', fill=T)
-title('Lake Poopó, Bolivia')
-points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
-map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
-#map('rivers', add=T)
+map <- map('worldHires','Bolivia', col = 'grey', fill=T)
+m <- leaflet(map) %>%
+  setView(lng = -66.856825, lat = -18.735300, zoom = 5) %>%
+  addMarkers(lng=-67.056825, lat=-18.735300, popup="Lake Poopó") %>%
+  addPolygons(color="red", weight = 1, smoothFactor = 0.5, 
+            opacity = 1.0, fillOpacity = 0.1)
+m %>% addTiles()
 
-#----------------------------------------------------------------------------------------
-#mapping, version 2
-map('worldHires',
-    c('Bolivia', 'Peru'), col='grey', fill=T)
-title('Lake Poopó, Bolivia')
-points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
-map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
+
+
+
+
 
 
