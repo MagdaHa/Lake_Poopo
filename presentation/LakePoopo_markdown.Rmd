@@ -20,28 +20,21 @@ knitr::opts_chunk$set(echo = FALSE)
 - located in the Bolivian Altiplano
 - mean elevation: 3810 m a.s.l.
 - Landsat time series from 1989 to 2018
-
-```{r, echo=FALSE, warning=FALSE, error=FALSE}
-library(maps)
-library(mapdata)
-map <- map('worldHires','Bolivia', col = 'grey', fill=T)
-points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
-plot(map)
-```
-
-
-##investigation area Lake Poopó
 - extremely regulated by environmental influences
 - declared dry in 2015 but still fills periodically with water
 - Desaguadero River: transports water from Lake Titicaca to Lake Poopó
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE}
+#loading required packages
 library(maps)
 library(mapdata)
-map <- map('worldHires','Bolivia', col = 'grey', fill=T)
-points(-67.056825,-18.735300,col= 'blue',pch=16, size=2)
-map('lakes', add=T, fill=T, col = 'blue', boundary='blue')
-plot(map)
+library(leaflet)
+
+#----------------------------------------------------------------------------------------
+m <- leaflet() %>%
+  setView(lng = -66.856825, lat = -18.735300, zoom = 5) %>%
+  addMarkers(lng=-67.056825, lat=-18.735300, popup="Lake Poopó")
+addTiles(m)
 ```
 
 
